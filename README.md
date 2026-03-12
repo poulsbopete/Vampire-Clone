@@ -2,6 +2,7 @@
 
 A small prototype inspired by **Vampire Survivors**, built with **Phaser 3** and **TypeScript**. Move with WASD, auto-aim shoots at the nearest enemy, and coins are drawn toward you when close. The base prototype was originally created here: https://emanueleferonato.com/2024/12/12/html5-vampire-survivors-prototype-built-with-phaser-step-2-adding-and-collecting-coins/
 
+
 ## Prerequisites
 
 - **Node.js** (v16 or newer recommended)
@@ -101,3 +102,4 @@ Save the file and the dev server will reload with your changes.
 - Adjust balance and feel in `gameOptions.ts`
 
 Have fun expanding your Vampire Survivors–style prototype.
+Test 1234
