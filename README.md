@@ -1,6 +1,6 @@
 # Vampire Survivors–Style Prototype
 
-A small prototype inspired by **Vampire Survivors**, built with **Phaser 3** and **TypeScript**. Move with WASD, auto-aim shoots at the nearest enemy, and coins are drawn toward you when close.
+A small prototype inspired by **Vampire Survivors**, built with **Phaser 3** and **TypeScript**. Move with WASD, auto-aim shoots at the nearest enemy, and coins are drawn toward you when close. The base prototype was originally created here: https://emanueleferonato.com/2024/12/12/html5-vampire-survivors-prototype-built-with-phaser-step-2-adding-and-collecting-coins/
 
 ## Prerequisites
 
