@@ -3,7 +3,9 @@
 // modules to import
 import Phaser from 'phaser';                            // Phaser
 import { PreloadAssets } from './scenes/preloadAssets'; // preloadAssets scene
+import { StartScene } from './scenes/startScene';      // start menu
 import { PlayGame } from './scenes/playGame';           // playGame scene
+import { GameOverScene } from './scenes/gameOverScene'; // game over
 import { GameOptions } from './gameOptions';            // game options
 
 // object to initialize the Scale Manager
@@ -22,7 +24,9 @@ const configObject : Phaser.Types.Core.GameConfig = {
     scale           : scaleObject,                      // scale settings
     scene           : [                                 // array with game scenes
         PreloadAssets,                                  // PreloadAssets scene
-        PlayGame                                        // PlayGame scene
+        StartScene,                                     // Start menu
+        PlayGame,                                       // PlayGame scene
+        GameOverScene                                   // Game over + Play Again
     ],
     physics : {                                                                             
         default : 'arcade'                              // physics engine used is arcade physics

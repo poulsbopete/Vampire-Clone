@@ -1,6 +1,12 @@
-# Vampire Survivors–Style Prototype
+# O11Y Survivors
 
-A small prototype inspired by **Vampire Survivors**, built with **Phaser 3** and **TypeScript**. Move with WASD, auto-aim shoots at the nearest enemy, and coins are drawn toward you when close. The base prototype was originally created here: https://emanueleferonato.com/2024/12/12/html5-vampire-survivors-prototype-built-with-phaser-step-2-adding-and-collecting-coins/
+A survivor-style game built with **Phaser 3** and **TypeScript**. Your goal is to **fend off the competition** and **collect OpenTelemetry knowledge** (coins) to better compete in the marketplace. Move with WASD, auto-aim shoots at the nearest enemy, and coins are drawn toward you when close. The base prototype was originally inspired by Vampire Survivors and created here: https://emanueleferonato.com/2024/12/12/html5-vampire-survivors-prototype-built-with-phaser-step-2-adding-and-collecting-coins/
+
+## Game purpose
+
+You represent an observability team under pressure from competitors. By collecting OpenTelemetry knowledge (coins), you unlock **upgrades** that make you stronger. Taking out large installations (bosses) grants special rewards. The more you collect, the more rivals appear—so you must keep upgrading to stay ahead.
+
+**Play area:** The play map has a large solid center (the main arena) with a tiled cubicle perimeter. Movement and combat take place in the center; the perimeter is decorative.
 
 
 ## Prerequisites
@@ -50,10 +56,12 @@ This outputs a ready-to-serve **`dist`** folder (HTML, CSS, assets, and bundled 
 | **A** | Move left|
 | **S** | Move down|
 | **D** | Move right|
+| **Space** | Continue (on boss reward overlays) |
 
 - Movement: **WASD**
 - Shooting: **automatic** — targets the nearest enemy
 - Coins: **magnet** — when you get close, coins are pulled toward you
+- Boss reward screens: click **Continue** or press **Space** to dismiss
 
 ## Project structure
 
@@ -76,6 +84,25 @@ vampire-Clone/
 └── package.json
 ```
 
+## Upgrade patterns
+
+Progress is driven by **coins** (OpenTelemetry knowledge). Upgrades are offered at fixed score thresholds and when you defeat certain bosses for the first time.
+
+**Level-ups** (press **1** or **2** to choose; no Space on these screens):
+
+- **Level 2 (15 coins)** — First upgrade: choose **Spread shot** (3 bullets) or **Double fire rate**. A warning appears: new competitors are coming for your business.
+- **Level 3 (100 coins)** — You get the second upgrade in addition to the first (you keep both). You end up with **spread shot and double fire rate at the same time**. Same warning.
+- **Level 4 (250 coins)** — **Full Stack Visibility**: bullets pierce one enemy and expire on the second, plus a one-time shield that absorbs one enemy hit (destroys that enemy); the player icon spins slowly while the shield is active.
+- **Level 5 (500 coins)** — **Performance Tuning**: +10% move speed, +10% bullet speed, +10% fire rate, and +10% magnet pickup range for the rest of the run.
+
+**Boss rewards** (first defeat only; overlays can be dismissed with **Continue** or **Space**):
+
+- **Boss 1 (Data Dog)** — Spawns at 50 coins. First-time reward: congratulations overlay and **+20% movement speed** for the rest of the run.
+- **Boss 2 (Splunk)** — Spawns at 200 coins (and with all bosses at 400). First-time reward: congratulations overlay and **+15% magnet pickup range** for the rest of the run.
+- **Boss 3 (DynaTrace)** — Spawns at 300 coins (and with all bosses at 400). Has 10 HP. First-time reward: congratulations overlay and **+10% bullet speed** for the rest of the run.
+
+Bosses are 75% larger than normal enemies and have more health than regular enemies.
+
 ## Tuning the game
 
 Edit **`src/scripts/gameOptions.ts`** to change:
@@ -84,6 +111,7 @@ Edit **`src/scripts/gameOptions.ts`** to change:
 - **Speeds** – `playerSpeed`, `enemySpeed`, `bulletSpeed`
 - **Rates** – `bulletRate`, `enemyRate` (milliseconds)
 - **Magnet** – `magnetRadius` (how close coins need to be to be attracted)
+- **Level thresholds** – `expPerLevel`, `level3ScoreThreshold`, `level4ScoreThreshold`, `level5ScoreThreshold` (e.g. 500 for level 5)
 - **Background** – `gameBackgroundColor`
 
 Save the file and the dev server will reload with your changes.
@@ -101,5 +129,4 @@ Save the file and the dev server will reload with your changes.
 - Add or swap sprites in `src/assets/sprites/` and load them in `preloadAssets.ts`
 - Adjust balance and feel in `gameOptions.ts`
 
-Have fun expanding your Vampire Survivors–style prototype.
-Test 1234
+Have fun expanding O11Y Survivors.
