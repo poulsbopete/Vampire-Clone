@@ -56,12 +56,16 @@ This outputs a ready-to-serve **`dist`** folder (HTML, CSS, assets, and bundled 
 | **A** | Move left|
 | **S** | Move down|
 | **D** | Move right|
-| **Space** | Continue (on boss reward overlays) |
+| **F** | Pause / Resume |
+| **Space** | Continue (on boss reward overlays only) |
+| **1** / **2** | Choose upgrade (on level-up overlays) |
 
 - Movement: **WASD**
 - Shooting: **automatic** — targets the nearest enemy
 - Coins: **magnet** — when you get close, coins are pulled toward you
-- Boss reward screens: click **Continue** or press **Space** to dismiss
+- **Pause (F):** Pauses the game; no new enemies spawn while paused. Press **F** again to resume.
+- **Level-up screens:** Press **1** or **2** to pick an upgrade (do not use Space on these).
+- **Boss reward screens:** Click **Continue** or press **Space** to dismiss.
 
 ## Project structure
 
@@ -83,6 +87,16 @@ vampire-Clone/
 ├── tsconfig.json
 └── package.json
 ```
+
+## Pause and spawning
+
+Enemy spawning is **paused** whenever:
+
+- The game is **paused** (F), or  
+- A **level-up overlay** is open (choosing 1 or 2), or  
+- A **boss reward overlay** is open (Continue / Space).
+
+So you can read upgrade text or leave the game paused without enemies building up off-screen; when you resume or close the overlay, spawning continues on the normal schedule.
 
 ## Upgrade patterns
 

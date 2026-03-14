@@ -1,37 +1,26 @@
 // MAIN GAME FILE
 
-// modules to import
-import Phaser from 'phaser';                            // Phaser
-import { PreloadAssets } from './scenes/preloadAssets'; // preloadAssets scene
-import { StartScene } from './scenes/startScene';      // start menu
-import { PlayGame } from './scenes/playGame';           // playGame scene
-import { GameOverScene } from './scenes/gameOverScene'; // game over
-import { GameOptions } from './gameOptions';            // game options
+import Phaser from 'phaser';
+import { PreloadAssets } from './scenes/preloadAssets';
+import { StartScene } from './scenes/startScene';
+import { PlayGame } from './scenes/playGame';
+import { GameOverScene } from './scenes/gameOverScene';
+import { GameOptions } from './gameOptions';
 
-// object to initialize the Scale Manager
 const scaleObject : Phaser.Types.Core.ScaleConfig = {
     mode        : Phaser.Scale.FIT,                     // adjust size to automatically fit in the window
     autoCenter  : Phaser.Scale.CENTER_BOTH,             // center the game horizontally and vertically
-    parent      : 'thegame',                            // DOM id where to render the game
-    width       : GameOptions.gameSize.width,           // game width, in pixels
-    height      : GameOptions.gameSize.height           // game height, in pixels
+    parent      : 'thegame',
+    width       : GameOptions.gameSize.width,
+    height      : GameOptions.gameSize.height
 }
 
-// game configuration object
-const configObject : Phaser.Types.Core.GameConfig = { 
-    type            : Phaser.WEBGL,                     // game renderer
-    backgroundColor : GameOptions.gameBackgroundColor,  // game background color
-    scale           : scaleObject,                      // scale settings
-    scene           : [                                 // array with game scenes
-        PreloadAssets,                                  // PreloadAssets scene
-        StartScene,                                     // Start menu
-        PlayGame,                                       // PlayGame scene
-        GameOverScene                                   // Game over + Play Again
-    ],
-    physics : {                                                                             
-        default : 'arcade'                              // physics engine used is arcade physics
-    }
-}
+const configObject : Phaser.Types.Core.GameConfig = {
+    type            : Phaser.WEBGL,
+    backgroundColor : GameOptions.gameBackgroundColor,
+    scale           : scaleObject,
+    scene           : [ PreloadAssets, StartScene, PlayGame, GameOverScene ],
+    physics         : { default : 'arcade' }
+};
 
-// the game itself
 new Phaser.Game(configObject);

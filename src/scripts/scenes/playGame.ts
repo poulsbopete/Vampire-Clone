@@ -1,9 +1,7 @@
-// THE GAME ITSELF
+// PLAY GAME SCENE
 
-// modules to import
-import { GameOptions } from '../gameOptions';   // game options   
+import { GameOptions } from '../gameOptions';
 
-// PlayGame class extends Phaser.Scene class
 export class PlayGame extends Phaser.Scene {
 
     constructor() {
@@ -43,17 +41,18 @@ export class PlayGame extends Phaser.Scene {
     shieldActive           : boolean = false;
     boss1FirstCoinCollectedShown : boolean = false;
     playerSpeedMultiplier        : number = 1;
-    boss1Overlay                 : Phaser.GameObjects.Container | null = null;
-    boss2FirstCoinCollectedShown : boolean = false;
+    boss2FirstCoinCollectedShown  : boolean = false;
     magnetRadiusMultiplier       : number = 1;
-    boss2Overlay                 : Phaser.GameObjects.Container | null = null;
-    boss3FirstCoinCollectedShown : boolean = false;
+    boss3FirstCoinCollectedShown  : boolean = false;
     bulletSpeedMultiplier        : number = 1;
-    boss3Overlay                 : Phaser.GameObjects.Container | null = null;
-    private _levelUpKeyHandler   : ((e: KeyboardEvent) => void) | null = null;
+    private _levelUpKeyHandler    : ((e: KeyboardEvent) => void) | null = null;
     private _bossOverlayKeyHandler: ((e: KeyboardEvent) => void) | null = null;
+    private _activeBossOverlay    : Phaser.GameObjects.Container | null = null;
+    private _userPaused           : boolean = false;
+    private _pauseOverlay         : Phaser.GameObjects.Container | null = null;
+    private _pauseKey             : Phaser.Input.Keyboard.Key | null = null;
+    private _shieldBubble         : Phaser.GameObjects.Graphics | null = null;
 
-    // method to be called once the instance has been created
     create() : void {
 
         this.score = 0;
@@ -78,20 +77,21 @@ export class PlayGame extends Phaser.Scene {
         this.magnetRadiusMultiplier = 1;
         this.boss3FirstCoinCollectedShown = false;
         this.bulletSpeedMultiplier = 1;
-        if (this.boss1Overlay) {
-            this.boss1Overlay.destroy();
-            this.boss1Overlay = null;
+        if (this._activeBossOverlay) {
+            this._activeBossOverlay.destroy();
+            this._activeBossOverlay = null;
         }
-        if (this.boss2Overlay) {
-            this.boss2Overlay.destroy();
-            this.boss2Overlay = null;
+        this._userPaused = false;
+        if (this._pauseOverlay) {
+            this._pauseOverlay.destroy();
+            this._pauseOverlay = null;
         }
-        if (this.boss3Overlay) {
-            this.boss3Overlay.destroy();
-            this.boss3Overlay = null;
+        if (this._shieldBubble) {
+            this._shieldBubble.destroy();
+            this._shieldBubble = null;
         }
 
-        // top-down office playfield (cubicles, breakroom, plants) — whimsical, no gameplay impact
+        // Office playfield: tiled perimeter, solid center (no gameplay impact)
         this.drawOfficePlayfield();
 
         // world bounds so player and projectiles stay on screen
@@ -105,13 +105,14 @@ export class PlayGame extends Phaser.Scene {
         this.bulletGroup = this.physics.add.group();
 
         // set keyboard controls
-        const keyboard : Phaser.Input.Keyboard.KeyboardPlugin = this.input.keyboard as Phaser.Input.Keyboard.KeyboardPlugin; 
+        const keyboard : Phaser.Input.Keyboard.KeyboardPlugin = this.input.keyboard as Phaser.Input.Keyboard.KeyboardPlugin;
         this.controlKeys = keyboard.addKeys({
             'up'    : Phaser.Input.Keyboard.KeyCodes.W,
             'left'  : Phaser.Input.Keyboard.KeyCodes.A,
             'down'  : Phaser.Input.Keyboard.KeyCodes.S,
             'right' : Phaser.Input.Keyboard.KeyCodes.D
         });
+        this._pauseKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         
         // set outer rectangle and inner rectangle; enemy spawn area is between these rectangles
         const outerRectangle : Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(-100, -100, GameOptions.gameSize.width + 200, GameOptions.gameSize.height + 200);
@@ -121,6 +122,7 @@ export class PlayGame extends Phaser.Scene {
             delay: baseEnemyRate,
             loop: true,
             callback: () => {
+                if (this.scenePaused) return;
                 const spawnPoint : Phaser.Geom.Point = Phaser.Geom.Rectangle.RandomOutside(outerRectangle, innerRectangle);
                 const useEnemy2 = this.score >= 20 && Math.random() < 0.5;
                 const key = useEnemy2 ? 'enemy2' : 'enemy';
@@ -139,6 +141,7 @@ export class PlayGame extends Phaser.Scene {
             delay: baseEnemyRate,
             loop: true,
             callback: () => {
+                if (this.scenePaused) return;
                 if (this.score < GameOptions.enemy3SpawnAtScore) return;
                 const spawnPoint = Phaser.Geom.Rectangle.RandomOutside(outerRectangle, innerRectangle);
                 const enemy = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, 'enemy3');
@@ -366,8 +369,7 @@ export class PlayGame extends Phaser.Scene {
     }
 
     private drawExpBar(ratio: number): void {
-        const { width, height } = GameOptions.gameSize;
-        const barX = width / 2 - GameOptions.levelBarWidth / 2;
+        const barX = GameOptions.gameSize.width / 2 - GameOptions.levelBarWidth / 2;
         const barY = 28;
         const w = GameOptions.levelBarWidth;
         const h = GameOptions.levelBarHeight;
@@ -490,7 +492,17 @@ export class PlayGame extends Phaser.Scene {
     private applyFullStackVisibility(): void {
         this.hasFullStackVisibility = true;
         this.shieldActive = true;
+        this.createShieldBubble();
         this.closeLevelUpOverlay();
+    }
+
+    private createShieldBubble(): void {
+        if (this._shieldBubble) return;
+        const radius = 36;
+        this._shieldBubble = this.add.graphics().setDepth(-0.5);
+        this._shieldBubble.lineStyle(3, 0x5dade2, 0.85);
+        this._shieldBubble.strokeCircle(0, 0, radius);
+        this._shieldBubble.setPosition(this.player.x, this.player.y);
     }
 
     private applyUpgrade(choice: 'spread' | 'doubleRate'): void {
@@ -626,6 +638,7 @@ export class PlayGame extends Phaser.Scene {
             delay,
             loop: true,
             callback: () => {
+                if (this.scenePaused) return;
                 const spawnPoint = Phaser.Geom.Rectangle.RandomOutside(outerRect, innerRect);
                 const useEnemy2 = this.score >= 20 && Math.random() < 0.5;
                 const key = useEnemy2 ? 'enemy2' : 'enemy';
@@ -643,6 +656,7 @@ export class PlayGame extends Phaser.Scene {
             delay,
             loop: true,
             callback: () => {
+                if (this.scenePaused) return;
                 if (this.score < GameOptions.enemy3SpawnAtScore) return;
                 const spawnPoint = Phaser.Geom.Rectangle.RandomOutside(outerRect, innerRect);
                 const enemy = this.physics.add.sprite(spawnPoint.x, spawnPoint.y, 'enemy3');
@@ -670,19 +684,34 @@ export class PlayGame extends Phaser.Scene {
         this.physics.resume();
     }
 
-    private showBoss1CongratulationsOverlay(): void {
+    private showPauseOverlay(): void {
+        const { width, height } = GameOptions.gameSize;
+        const overlay = this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.65).setScrollFactor(0);
+        const title = this.add.text(width / 2, height / 2 - 24, 'Paused', {
+            fontSize: '52px',
+            color: '#5dade2',
+            fontStyle: 'bold'
+        }).setOrigin(0.5).setScrollFactor(0);
+        const hint = this.add.text(width / 2, height / 2 + 28, 'Press F to resume', {
+            fontSize: '22px',
+            color: '#bdc3c7'
+        }).setOrigin(0.5).setScrollFactor(0);
+        this._pauseOverlay = this.add.container(0, 0, [overlay, title, hint]);
+    }
+
+    private showBossCongratulationsOverlay(title: string, rewardText: string): void {
         this.scenePaused = true;
         this.physics.pause();
         const { width, height } = GameOptions.gameSize;
         const wrap = GameOptions.levelUpTitleWrapWidth;
         const overlay = this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.75).setScrollFactor(0);
-        const title = this.add.text(width / 2, height * 0.35, 'Congratulations on Taking out a large installation of Data Dog', {
+        const titleEl = this.add.text(width / 2, height * 0.35, title, {
             fontSize: '20px',
             color: '#5dade2',
             align: 'center',
             wordWrap: { width: wrap }
         }).setOrigin(0.5).setScrollFactor(0);
-        const reward = this.add.text(width / 2, height * 0.48, 'Your reward: +20% movement speed', {
+        const reward = this.add.text(width / 2, height * 0.48, rewardText, {
             fontSize: '18px',
             color: '#bdc3c7',
             align: 'center',
@@ -696,128 +725,49 @@ export class PlayGame extends Phaser.Scene {
             fontSize: '20px',
             color: '#ecf0f1'
         }).setOrigin(0.5).setScrollFactor(0).setInteractive({ useHandCursor: true });
-        continueBtn.on('pointerdown', () => this.closeBoss1Overlay());
-        this.boss1Overlay = this.add.container(0, 0, [overlay, title, reward, spaceHint, continueBtn]);
+        continueBtn.on('pointerdown', () => this.closeBossOverlay());
+        this._activeBossOverlay = this.add.container(0, 0, [overlay, titleEl, reward, spaceHint, continueBtn]);
         this._bossOverlayKeyHandler = (e: KeyboardEvent) => {
             if (e.code === 'Space' || e.key === ' ') {
                 e.preventDefault();
-                this.closeBoss1Overlay();
+                this.closeBossOverlay();
             }
         };
         this.input.keyboard!.on('keydown', this._bossOverlayKeyHandler as any);
     }
 
-    private closeBoss1Overlay(): void {
+    private closeBossOverlay(): void {
         if (this._bossOverlayKeyHandler) {
             this.input.keyboard?.off('keydown', this._bossOverlayKeyHandler as any);
             this._bossOverlayKeyHandler = null;
         }
-        if (this.boss1Overlay) {
-            this.boss1Overlay.destroy();
-            this.boss1Overlay = null;
+        if (this._activeBossOverlay) {
+            this._activeBossOverlay.destroy();
+            this._activeBossOverlay = null;
         }
         this.scenePaused = false;
         this.physics.resume();
+    }
+
+    private showBoss1CongratulationsOverlay(): void {
+        this.showBossCongratulationsOverlay(
+            'Congratulations on Taking out a large installation of Data Dog',
+            'Your reward: +20% movement speed'
+        );
     }
 
     private showBoss2CongratulationsOverlay(): void {
-        this.scenePaused = true;
-        this.physics.pause();
-        const { width, height } = GameOptions.gameSize;
-        const wrap = GameOptions.levelUpTitleWrapWidth;
-        const overlay = this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.75).setScrollFactor(0);
-        const title = this.add.text(width / 2, height * 0.35, 'Congratulations on Taking out a large installation of Splunk', {
-            fontSize: '20px',
-            color: '#5dade2',
-            align: 'center',
-            wordWrap: { width: wrap }
-        }).setOrigin(0.5).setScrollFactor(0);
-        const reward = this.add.text(width / 2, height * 0.48, 'Your reward: +15% magnet pickup range', {
-            fontSize: '18px',
-            color: '#bdc3c7',
-            align: 'center',
-            wordWrap: { width: wrap }
-        }).setOrigin(0.5).setScrollFactor(0);
-        const spaceHint = this.add.text(width / 2, height * 0.55, 'Press Space to continue', {
-            fontSize: '14px',
-            color: '#95a5a6'
-        }).setOrigin(0.5).setScrollFactor(0);
-        const continueBtn = this.add.text(width / 2, height * 0.62, 'Continue', {
-            fontSize: '20px',
-            color: '#ecf0f1'
-        }).setOrigin(0.5).setScrollFactor(0).setInteractive({ useHandCursor: true });
-        continueBtn.on('pointerdown', () => this.closeBoss2Overlay());
-        this.boss2Overlay = this.add.container(0, 0, [overlay, title, reward, spaceHint, continueBtn]);
-        this._bossOverlayKeyHandler = (e: KeyboardEvent) => {
-            if (e.code === 'Space' || e.key === ' ') {
-                e.preventDefault();
-                this.closeBoss2Overlay();
-            }
-        };
-        this.input.keyboard!.on('keydown', this._bossOverlayKeyHandler as any);
-    }
-
-    private closeBoss2Overlay(): void {
-        if (this._bossOverlayKeyHandler) {
-            this.input.keyboard?.off('keydown', this._bossOverlayKeyHandler as any);
-            this._bossOverlayKeyHandler = null;
-        }
-        if (this.boss2Overlay) {
-            this.boss2Overlay.destroy();
-            this.boss2Overlay = null;
-        }
-        this.scenePaused = false;
-        this.physics.resume();
+        this.showBossCongratulationsOverlay(
+            'Congratulations on Taking out a large installation of Splunk',
+            'Your reward: +15% magnet pickup range'
+        );
     }
 
     private showBoss3CongratulationsOverlay(): void {
-        this.scenePaused = true;
-        this.physics.pause();
-        const { width, height } = GameOptions.gameSize;
-        const wrap = GameOptions.levelUpTitleWrapWidth;
-        const overlay = this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.75).setScrollFactor(0);
-        const title = this.add.text(width / 2, height * 0.35, 'Congratulations on Taking out a large installation of DynaTrace', {
-            fontSize: '20px',
-            color: '#5dade2',
-            align: 'center',
-            wordWrap: { width: wrap }
-        }).setOrigin(0.5).setScrollFactor(0);
-        const reward = this.add.text(width / 2, height * 0.48, 'Your reward: +10% bullet speed', {
-            fontSize: '18px',
-            color: '#bdc3c7',
-            align: 'center',
-            wordWrap: { width: wrap }
-        }).setOrigin(0.5).setScrollFactor(0);
-        const spaceHint = this.add.text(width / 2, height * 0.55, 'Press Space to continue', {
-            fontSize: '14px',
-            color: '#95a5a6'
-        }).setOrigin(0.5).setScrollFactor(0);
-        const continueBtn = this.add.text(width / 2, height * 0.62, 'Continue', {
-            fontSize: '20px',
-            color: '#ecf0f1'
-        }).setOrigin(0.5).setScrollFactor(0).setInteractive({ useHandCursor: true });
-        continueBtn.on('pointerdown', () => this.closeBoss3Overlay());
-        this.boss3Overlay = this.add.container(0, 0, [overlay, title, reward, spaceHint, continueBtn]);
-        this._bossOverlayKeyHandler = (e: KeyboardEvent) => {
-            if (e.code === 'Space' || e.key === ' ') {
-                e.preventDefault();
-                this.closeBoss3Overlay();
-            }
-        };
-        this.input.keyboard!.on('keydown', this._bossOverlayKeyHandler as any);
-    }
-
-    private closeBoss3Overlay(): void {
-        if (this._bossOverlayKeyHandler) {
-            this.input.keyboard?.off('keydown', this._bossOverlayKeyHandler as any);
-            this._bossOverlayKeyHandler = null;
-        }
-        if (this.boss3Overlay) {
-            this.boss3Overlay.destroy();
-            this.boss3Overlay = null;
-        }
-        this.scenePaused = false;
-        this.physics.resume();
+        this.showBossCongratulationsOverlay(
+            'Congratulations on Taking out a large installation of DynaTrace',
+            'Your reward: +10% bullet speed'
+        );
     }
 
     private updateScoreDisplay(): void {
@@ -835,11 +785,38 @@ export class PlayGame extends Phaser.Scene {
     }
 
     update() {
-        if (this.scenePaused) return;
+        // Pause (F key): only when no level-up or boss overlay is showing
+        if (this.scenePaused) {
+            if (this._userPaused && Phaser.Input.Keyboard.JustDown(this._pauseKey!)) {
+                this._userPaused = false;
+                this.scenePaused = false;
+                this.physics.resume();
+                if (this._pauseOverlay) {
+                    this._pauseOverlay.destroy();
+                    this._pauseOverlay = null;
+                }
+            }
+            return;
+        }
+        if (Phaser.Input.Keyboard.JustDown(this._pauseKey!)) {
+            this._userPaused = true;
+            this.scenePaused = true;
+            this.physics.pause();
+            this.showPauseOverlay();
+            return;
+        }
 
-        // when shield is active, spin the player slowly
-        if (this.shieldActive) {
+        // Level 4: player spins continuously (does not stop when shield is hit)
+        if (this.hasFullStackVisibility) {
             this.player.angle += 1;
+        }
+
+        // Shield bubble: visible only while shield is active; position follows player
+        if (this._shieldBubble) {
+            this._shieldBubble.setVisible(this.shieldActive);
+            if (this.shieldActive) {
+                this._shieldBubble.setPosition(this.player.x, this.player.y);
+            }
         }
 
         // set movement direction according to keys pressed
@@ -848,13 +825,13 @@ export class PlayGame extends Phaser.Scene {
             movementDirection.x++;
         }
         if (this.controlKeys.left.isDown) {
-            movementDirection.x --;
+            movementDirection.x--;
         }
         if (this.controlKeys.up.isDown) {
-            movementDirection.y --;
+            movementDirection.y--;
         }
         if (this.controlKeys.down.isDown) {
-            movementDirection.y ++;
+            movementDirection.y++;
         }
 
         // set player velocity according to movement direction

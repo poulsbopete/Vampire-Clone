@@ -1,21 +1,14 @@
-// CLASS TO PRELOAD ASSETS
+// PRELOAD ASSETS
 
 import { GameOptions } from '../gameOptions';
 
-// PreloadAssets class extends Phaser.Scene class
 export class PreloadAssets extends Phaser.Scene {
-  
-    // constructor    
+
     constructor() {
-        super({
-            key : 'PreloadAssets'
-        });
+        super({ key : 'PreloadAssets' });
     }
-  
-    // method to be called during class preloading
+
     preload() : void {
- 
-        // load images
         this.load.image('enemy', 'assets/sprites/dd.png');
         this.load.image('enemy2', 'assets/sprites/enemy2.png');
         this.load.image('enemy3', 'assets/sprites/enemy3.png');
@@ -23,11 +16,8 @@ export class PreloadAssets extends Phaser.Scene {
         this.load.image('bullet', 'assets/sprites/bullet.png');
         this.load.image('coin', 'assets/sprites/otel-logo.png');
     }
-  
-    // method to be executed when the scene is created
-    create() : void {
 
-        // tech background texture (grid + nodes)
+    create() : void {
         const w = GameOptions.gameSize.width;
         const h = GameOptions.gameSize.height;
         const g = this.add.graphics();
@@ -49,8 +39,6 @@ export class PreloadAssets extends Phaser.Scene {
         }
         g.generateTexture('techBg', w, h);
         g.destroy();
-
-        // start StartScene (menu)
         this.scene.start('StartScene');
     }
 }
