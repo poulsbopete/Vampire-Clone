@@ -57,7 +57,7 @@ This repo includes **`.github/workflows/deploy-github-pages.yml`**. On each push
 
 **`https://<org-or-user>.github.io/<repository>/`**
 
-For this upstream repo that is typically **`https://elastic-ed.github.io/Vampire-Clone/`** (forks should swap in their own `github.io` path). Use that URL in Kibana markdown or anywhere you want an embeddable “play here” link.
+This fork deploys to **`https://poulsbopete.github.io/Vampire-Clone/`** once Actions has run. Use that URL in Kibana markdown or anywhere you want a “play here” link. Upstream **`elastic-ed/Vampire-Clone`** would use `https://elastic-ed.github.io/Vampire-Clone/` instead.
 
 ## Controls
 
