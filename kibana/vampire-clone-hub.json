@@ -1,0 +1,18 @@
+{
+  "title": "Vampire Clone — hub",
+  "panels": [
+    {
+      "type": "markdown",
+      "uid": "vampire-intro",
+      "grid": { "x": 0, "y": 0, "w": 48, "h": 12 },
+      "config": {
+        "title": "Vampire Clone",
+        "content": "## Vampire Clone (this repo)\n\nBrowser **Phaser 3** survivor-style game. It does **not** ship telemetry to Elasticsearch by default.\n\n### Play (GitHub Pages)\n\nAfter [GitHub Actions Pages](https://github.com/elastic-ed/Vampire-Clone/actions) has deployed **`main`**, open:\n\n**[Play on GitHub Pages →](https://elastic-ed.github.io/Vampire-Clone/)**\n\n*(Forks: use `https://<user>.github.io/<repo>/` instead.)*\n\n### Run locally\n\n```bash\nnpm install && npm run development\n```\n\n### After you add logs/metrics/traces\n\nPoint Lens panels at your data views or ES|QL `FROM logs-*` (and similar) once ingest is wired.\n\n---\n*Dashboard created with the Kibana dashboards API (`kibana-dashboards.js`).*"
+      }
+    }
+  ],
+  "time_range": {
+    "from": "now-24h",
+    "to": "now"
+  }
+}

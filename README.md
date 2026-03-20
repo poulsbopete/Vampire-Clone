@@ -48,6 +48,17 @@ npm run distribution
 
 This outputs a ready-to-serve **`dist`** folder (HTML, CSS, assets, and bundled `main.js`). Serve `dist` with any static file server (e.g. `npx serve dist`) to play or deploy the game. For day-to-day testing, `npm run development` is usually enough.
 
+### GitHub Pages
+
+This repo includes **`.github/workflows/deploy-github-pages.yml`**. On each push to **`main`**, it runs `npm ci` and `npm run distribution`, then publishes **`dist/`** to GitHub Pages.
+
+1. In the GitHub repo: **Settings → Pages → Build and deployment → Source**: choose **GitHub Actions**.
+2. Push to `main`; when the workflow finishes, the game is available at:
+
+**`https://<org-or-user>.github.io/<repository>/`**
+
+For this upstream repo that is typically **`https://elastic-ed.github.io/Vampire-Clone/`** (forks should swap in their own `github.io` path). Use that URL in Kibana markdown or anywhere you want an embeddable “play here” link.
+
 ## Controls
 
 | Key   | Action   |
