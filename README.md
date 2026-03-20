@@ -1,157 +1,139 @@
 # O11Y Survivors
 
-A survivor-style game built with **Phaser 3** and **TypeScript**. Your goal is to **fend off the competition** and **collect OpenTelemetry knowledge** (coins) to better compete in the marketplace. Move with WASD, auto-aim shoots at the nearest enemy, and coins are drawn toward you when close. The base prototype was originally inspired by Vampire Survivors and created here: https://emanueleferonato.com/2024/12/12/html5-vampire-survivors-prototype-built-with-phaser-step-2-adding-and-collecting-coins/
+Survivor-style **Phaser 3** + **TypeScript** browser game: hold off rivals, collect **OpenTelemetry**-themed coins, unlock upgrades, and beat boss encounters. **WASD** to move; shooting auto-targets the nearest enemy.
 
-## Game purpose
+| Try it | URL |
+|--------|-----|
+| **Local dev** | `npm run development` → [http://localhost:8080](http://localhost:8080) |
+| **GitHub Pages** | After [Actions](https://github.com/poulsbopete/Vampire-Clone/actions) deploys `main`: **[poulsbopete.github.io/Vampire-Clone](https://poulsbopete.github.io/Vampire-Clone/)** |
 
-You represent an observability team under pressure from competitors. By collecting OpenTelemetry knowledge (coins), you unlock **upgrades** that make you stronger. Taking out large installations (bosses) grants special rewards. The more you collect, the more rivals appear—so you must keep upgrading to stay ahead.
+> Upstream repo **[elastic-ed/Vampire-Clone](https://github.com/elastic-ed/Vampire-Clone)** would use `https://elastic-ed.github.io/Vampire-Clone/` for Pages.
 
-**Play area:** The play map has a large solid center (the main arena) with a tiled cubicle perimeter. Movement and combat take place in the center; the perimeter is decorative.
+Prototype inspiration: [Vampire Survivors–style Phaser tutorial (Emanuele Feronato)](https://emanueleferonato.com/2024/12/12/html5-vampire-survivors-prototype-built-with-phaser-step-2-adding-and-collecting-coins/).
 
+---
 
 ## Prerequisites
 
-- **Node.js** (v16 or newer recommended)
-- **npm** (comes with Node.js)
+- **Node.js** 16+ (20+ recommended)
+- **npm**
 
-## Getting Started
-
-### 1. Install dependencies
-
-From the project root:
+## Quick start
 
 ```bash
+git clone https://github.com/poulsbopete/Vampire-Clone.git   # or upstream: elastic-ed/Vampire-Clone
+cd Vampire-Clone
 npm install
-```
-
-### 2. Run the game (development)
-
-Start the dev server and open the game in your browser:
-
-```bash
 npm run development
 ```
 
-This runs Webpack’s dev server and should open the game in your default browser. If it doesn’t, go to:
-
-**http://localhost:8080**
-
-(Or the URL shown in the terminal.)
-
-### 3. Build for production (optional)
-
-To create a production build:
+Production build (static files in **`dist/`**):
 
 ```bash
 npm run distribution
 ```
 
-This outputs a ready-to-serve **`dist`** folder (HTML, CSS, assets, and bundled `main.js`). Serve `dist` with any static file server (e.g. `npx serve dist`) to play or deploy the game. For day-to-day testing, `npm run development` is usually enough.
+Optional local preview of `dist/`: `npx serve dist`
 
-### GitHub Pages
+## GitHub Pages
 
-This repo includes **`.github/workflows/deploy-github-pages.yml`**. On each push to **`main`**, it runs `npm ci` and `npm run distribution`, then publishes **`dist/`** to GitHub Pages.
+Workflow: **`.github/workflows/deploy-github-pages.yml`** — on every push to **`main`**, runs `npm ci` and `npm run distribution`, then publishes **`dist/`**.
 
-1. In the GitHub repo: **Settings → Pages → Build and deployment → Source**: choose **GitHub Actions**.
-2. Push to `main`; when the workflow finishes, the game is available at:
+1. Repo **Settings → Pages → Build and deployment → Source:** **GitHub Actions**
+2. Push to `main` and wait for the workflow to finish
+3. Open your Pages URL (see table above; pattern is `https://<user-or-org>.github.io/<repo>/`)
 
-**`https://<org-or-user>.github.io/<repository>/`**
+Pushing workflow files requires a GitHub token with the **`workflow`** scope (e.g. `gh auth refresh -h github.com -s workflow`).
 
-This fork deploys to **`https://poulsbopete.github.io/Vampire-Clone/`** once Actions has run. Use that URL in Kibana markdown or anywhere you want a “play here” link. Upstream **`elastic-ed/Vampire-Clone`** would use `https://elastic-ed.github.io/Vampire-Clone/` instead.
+## Elastic / Kibana (optional)
+
+This repo includes:
+
+| Path | Purpose |
+|------|---------|
+| **`kibana/vampire-clone-hub.json`** | Dashboard definition for Kibana’s dashboards API (markdown hub + play link). |
+| **`scripts/create-serverless-o11y-and-dashboard.sh`** | Creates an Elastic **Serverless Observability** project (needs `EC_API_KEY` in `.env`) and uploads the hub dashboard via **`kibana-dashboards.js`**. |
+| **`.env.example`** | Documents `EC_API_KEY` for Cloud API calls. |
+
+Do **not** commit **`.env`** or **`.elastic-credentials`** (listed in `.gitignore`).
+
+## Game premise
+
+You’re an observability team under pressure. Coins represent **OpenTelemetry knowledge**; bosses are oversized rivals with extra health. The arena is a large central playfield with a decorative tiled perimeter.
 
 ## Controls
 
-| Key   | Action   |
-|-------|----------|
-| **W** | Move up  |
-| **A** | Move left|
-| **S** | Move down|
-| **D** | Move right|
-| **F** | Pause / Resume |
-| **Space** | Continue (on boss reward overlays only) |
-| **1** / **2** | Choose upgrade (on level-up overlays) |
+| Key | Action |
+|-----|--------|
+| **W A S D** | Move |
+| **F** | Pause / resume |
+| **1** / **2** | Pick upgrade on **level-up** overlays (do not use Space there) |
+| **Space** | Continue on **boss reward** overlays |
+| *(none)* | Shooting is **automatic** (nearest enemy) |
+| *(proximity)* | **Magnet** pulls coins when you’re close |
 
-- Movement: **WASD**
-- Shooting: **automatic** — targets the nearest enemy
-- Coins: **magnet** — when you get close, coins are pulled toward you
-- **Pause (F):** Pauses the game; no new enemies spawn while paused. Press **F** again to resume.
-- **Level-up screens:** Press **1** or **2** to pick an upgrade (do not use Space on these).
-- **Boss reward screens:** Click **Continue** or press **Space** to dismiss.
+Spawning pauses while paused (**F**), during level-up choice, or during boss reward overlays.
+
+## Upgrades & bosses
+
+**Level-ups** (thresholds are coin/score–driven; choose **1** or **2**):
+
+- **Level 2 (~15)** — Spread shot *or* double fire rate  
+- **Level 3 (~100)** — You keep the first upgrade and gain the second  
+- **Level 4 (~250)** — Full Stack Visibility: pierce + one-hit shield  
+- **Level 5 (~500)** — Performance tuning: +10% move, bullet speed, fire rate, magnet range  
+
+**Bosses** (first-kill rewards; dismiss with Continue / Space):
+
+| Boss | Rough spawn | Reward (first time) |
+|------|-------------|----------------------|
+| Data Dog | ~50 coins | +20% move speed |
+| Splunk | ~200 coins (also when all bosses at ~400) | +15% magnet range |
+| DynaTrace | ~300 coins (same) | 10 HP; +10% bullet speed |
+
+Bosses are larger and tougher than normal enemies.
 
 ## Project structure
 
 ```
-vampire-Clone/
+Vampire-Clone/
+├── .github/workflows/     # GitHub Pages deploy
+├── kibana/                # Kibana dashboard JSON
+├── scripts/               # Elastic Serverless + dashboard helper
 ├── src/
-│   ├── index.html              # Game HTML entry
-│   ├── style.css               # Global styles
-│   ├── assets/
-│   │   └── sprites/            # player, enemy, coin, bullet sprites
+│   ├── index.html
+│   ├── style.css
+│   ├── assets/sprites/    # Images loaded in preloadAssets.ts
 │   └── scripts/
-│       ├── main.ts             # Phaser game config & boot
-│       ├── gameOptions.ts      # Tunable game constants
+│       ├── main.ts
+│       ├── gameOptions.ts   # Tuning constants
 │       └── scenes/
-│           ├── preloadAssets.ts # Loads sprites and assets
-│           └── playGame.ts      # Main gameplay scene
-├── webpack.development.js      # Dev server config
-├── webpack.distribution.js     # Production build config
+│           ├── preloadAssets.ts
+│           ├── startScene.ts
+│           ├── playGame.ts
+│           └── gameOverScene.ts
+├── webpack.development.js
+├── webpack.distribution.js
 ├── tsconfig.json
 └── package.json
 ```
 
-## Pause and spawning
+## Tuning
 
-Enemy spawning is **paused** whenever:
-
-- The game is **paused** (F), or  
-- A **level-up overlay** is open (choosing 1 or 2), or  
-- A **boss reward overlay** is open (Continue / Space).
-
-So you can read upgrade text or leave the game paused without enemies building up off-screen; when you resume or close the overlay, spawning continues on the normal schedule.
-
-## Upgrade patterns
-
-Progress is driven by **coins** (OpenTelemetry knowledge). Upgrades are offered at fixed score thresholds and when you defeat certain bosses for the first time.
-
-**Level-ups** (press **1** or **2** to choose; no Space on these screens):
-
-- **Level 2 (15 coins)** — First upgrade: choose **Spread shot** (3 bullets) or **Double fire rate**. A warning appears: new competitors are coming for your business.
-- **Level 3 (100 coins)** — You get the second upgrade in addition to the first (you keep both). You end up with **spread shot and double fire rate at the same time**. Same warning.
-- **Level 4 (250 coins)** — **Full Stack Visibility**: bullets pierce one enemy and expire on the second, plus a one-time shield that absorbs one enemy hit (destroys that enemy); the player icon spins slowly while the shield is active.
-- **Level 5 (500 coins)** — **Performance Tuning**: +10% move speed, +10% bullet speed, +10% fire rate, and +10% magnet pickup range for the rest of the run.
-
-**Boss rewards** (first defeat only; overlays can be dismissed with **Continue** or **Space**):
-
-- **Boss 1 (Data Dog)** — Spawns at 50 coins. First-time reward: congratulations overlay and **+20% movement speed** for the rest of the run.
-- **Boss 2 (Splunk)** — Spawns at 200 coins (and with all bosses at 400). First-time reward: congratulations overlay and **+15% magnet pickup range** for the rest of the run.
-- **Boss 3 (DynaTrace)** — Spawns at 300 coins (and with all bosses at 400). Has 10 HP. First-time reward: congratulations overlay and **+10% bullet speed** for the rest of the run.
-
-Bosses are 75% larger than normal enemies and have more health than regular enemies.
-
-## Tuning the game
-
-Edit **`src/scripts/gameOptions.ts`** to change:
-
-- **Game size** – `gameSize.width` / `gameSize.height`
-- **Speeds** – `playerSpeed`, `enemySpeed`, `bulletSpeed`
-- **Rates** – `bulletRate`, `enemyRate` (milliseconds)
-- **Magnet** – `magnetRadius` (how close coins need to be to be attracted)
-- **Level thresholds** – `expPerLevel`, `level3ScoreThreshold`, `level4ScoreThreshold`, `level5ScoreThreshold` (e.g. 500 for level 5)
-- **Background** – `gameBackgroundColor`
-
-Save the file and the dev server will reload with your changes.
+Edit **`src/scripts/gameOptions.ts`**: `gameSize`, speeds, `bulletRate` / `enemyRate`, `magnetRadius`, level thresholds, colors, etc. Dev server reloads on save.
 
 ## Tech stack
 
-- **Phaser 3** – Game framework
-- **TypeScript** – Typed JavaScript
-- **Webpack 5** – Bundling and dev server
+- **Phaser 3** — Game framework  
+- **TypeScript**  
+- **Webpack 5** — Dev server + production bundle  
 
-## Next steps
+## Ideas for extending
 
-- Add new weapons or behaviors in `src/scripts/scenes/playGame.ts`
-- Add scenes (e.g. menu, game over) in `src/scripts/scenes/` and register them in `main.ts`
-- Add or swap sprites in `src/assets/sprites/` and load them in `preloadAssets.ts`
-- Adjust balance and feel in `gameOptions.ts`
+- New weapons / behaviors in `playGame.ts`  
+- More scenes; register in `main.ts`  
+- New sprites in `src/assets/sprites/` + `preloadAssets.ts`  
 
-Have fun expanding O11Y Survivors.
+---
+
+Have fun with O11Y Survivors.
