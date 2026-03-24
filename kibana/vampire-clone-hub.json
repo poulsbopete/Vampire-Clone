@@ -6,8 +6,8 @@
       "uid": "vampire-intro",
       "grid": { "x": 0, "y": 0, "w": 48, "h": 12 },
       "config": {
-        "title": "Vampire Clone",
-        "content": "## Vampire Clone (this repo)\n\nBrowser **Phaser 3** survivor-style game. It does **not** ship telemetry to Elasticsearch by default.\n\n### Play (GitHub Pages)\n\nAfter [GitHub Actions Pages](https://github.com/poulsbopete/Vampire-Clone/actions) has deployed **`main`**, open:\n\n**[Play on GitHub Pages →](https://poulsbopete.github.io/Vampire-Clone/)**\n\n*(Other forks: use `https://<user>.github.io/<repo>/`.)*\n\n### Run locally\n\n```bash\nnpm install && npm run development\n```\n\n### After you add logs/metrics/traces\n\nPoint Lens panels at your data views or ES|QL `FROM logs-*` (and similar) once ingest is wired.\n\n---\n*Dashboard created with the Kibana dashboards API (`kibana-dashboards.js`).*"
+        "title": "O11Y Survivors",
+        "content": "## O11Y Survivors (this repo)\n\nA **lighthearted, public-friendly** Phaser browser game — observability jokes, parody bosses, **no** in-game telemetry to Elasticsearch unless you add it.\n\n### Play (GitHub Pages)\n\nAfter [Actions](https://github.com/poulsbopete/Vampire-Clone/actions) deploys **`main`**:\n\n**[Play on GitHub Pages →](https://poulsbopete.github.io/Vampire-Clone/)**\n\n### Run locally\n\n```bash\nnpm install && npm run development\n```\n\n### Elastic dashboards\n\nWire Lens / ES|QL to your data when ingest exists.\n\n---\n*Kibana dashboards API (`kibana-dashboards.js`).*"
       }
     }
   ],

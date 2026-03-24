@@ -444,13 +444,13 @@ export class PlayGame extends Phaser.Scene {
         this.level = 2;
         this.updateLevelBar();
         this.showLevelUpOverlay(
-            'Congratulations! You have collected enough OpenTelemetry knowledge to implement Metrics',
+            'Metrics milestone: your dashboards now have feelings (and you have choices)',
             [
-                { label: '1 - Spread shot (3 bullets)', onPick: () => this.applyUpgrade('spread') },
-                { label: '2 - Double fire rate', onPick: () => this.applyUpgrade('doubleRate') },
+                { label: '1 - Spread shot — triplicate your opinions per second', onPick: () => this.applyUpgrade('spread') },
+                { label: '2 - Double fire rate — twice the "please ignore previous alert"', onPick: () => this.applyUpgrade('doubleRate') },
             ],
-            'Choose one reward:',
-            'Warning: New competitors are coming for your business'
+            'Pick a perk (product would call it "differentiation"):',
+            'Spoiler: more mascots are spawning in staging.'
         );
     }
 
@@ -458,13 +458,19 @@ export class PlayGame extends Phaser.Scene {
         this.level = 3;
         this.updateLevelBar();
         const otherReward = this.hasSpreadShot
-            ? { label: '1 - Double fire rate (you keep spread shot)', onPick: () => this.applyLevel3SecondUpgrade() }
-            : { label: '1 - Spread shot (3 bullets) (you keep double rate)', onPick: () => this.applyLevel3SecondUpgrade() };
+            ? {
+                  label: '1 - Double fire rate (you keep the spread shot chaos)',
+                  onPick: () => this.applyLevel3SecondUpgrade(),
+              }
+            : {
+                  label: '1 - Spread shot (you keep the double-tap chaos)',
+                  onPick: () => this.applyLevel3SecondUpgrade(),
+              };
         this.showLevelUpOverlay(
-            'Congratulations! You have collected enough OpenTelemetry knowledge to implement Metrics and Logs',
+            'Metrics + Logs: narrators say you are "basically production-ready"',
             [otherReward],
-            'You get the second upgrade—you now have both:',
-            'Warning: New competitors are coming for your business'
+            'You earn the second upgrade. You now wield both. HR has been notified.',
+            'More rivals inbound — correlation does not imply causation (but it does here).'
         );
     }
 
@@ -472,9 +478,14 @@ export class PlayGame extends Phaser.Scene {
         this.level = 4;
         this.updateLevelBar();
         this.showLevelUpOverlay(
-            'Congratulations! You have collected enough OpenTelemetry knowledge to implement Metrics, Logs, and Traces',
-            [{ label: '1 - Full Stack Visibility (pierce + shield)', onPick: () => this.applyFullStackVisibility() }],
-            'You get an upgrade:'
+            'Metrics, Logs, Traces — the trinity. You may now use the word "holistic" unironically',
+            [
+                {
+                    label: '1 - Full Stack Visibility (pierce + one free "not my fault" shield)',
+                    onPick: () => this.applyFullStackVisibility(),
+                },
+            ],
+            'Choose wisely (there is only one button; we believe in strong defaults):'
         );
     }
 
@@ -487,9 +498,14 @@ export class PlayGame extends Phaser.Scene {
         this.updateBulletTimer();
         this.updateLevelBar();
         this.showLevelUpOverlay(
-            'Congratulations! You have reached Level 5 — Performance Tuning',
-            [{ label: '1 - +10% move speed, bullet speed, fire rate, magnet range', onPick: () => this.closeLevelUpOverlay() }],
-            'You receive a 10% boost to all core stats:'
+            'Level 5 — Performance tuning. You read the runbook. You ARE the runbook.',
+            [
+                {
+                    label: '1 - +10% everything spicy (move, bullets, fire rate, magnet)',
+                    onPick: () => this.closeLevelUpOverlay(),
+                },
+            ],
+            'A modest buff. Marketing would call it "10x". We call it +10%.'
         );
     }
 
@@ -573,10 +589,17 @@ export class PlayGame extends Phaser.Scene {
             t.on('pointerdown', opt.onPick);
             elements.push(t);
         });
-        const hintText = this.add.text(width / 2, startY + options.length * step * height + height * 0.06, options.length === 1 ? 'Press 1 to continue' : 'Press 1 or 2 to choose', {
-            fontSize: '14px',
-            color: '#95a5a6'
-        }).setOrigin(0.5).setScrollFactor(0);
+        const hintText = this.add.text(
+            width / 2,
+            startY + options.length * step * height + height * 0.06,
+            options.length === 1
+                ? 'Press 1 (Space is on PTO for this dialog)'
+                : 'Press 1 or 2 — Space is still on PTO',
+            {
+                fontSize: '14px',
+                color: '#95a5a6',
+            }
+        ).setOrigin(0.5).setScrollFactor(0);
         elements.push(hintText);
         this._levelUpKeyHandler = (e: KeyboardEvent) => {
             options.forEach((opt, i) => {
@@ -696,9 +719,11 @@ export class PlayGame extends Phaser.Scene {
             color: '#5dade2',
             fontStyle: 'bold'
         }).setOrigin(0.5).setScrollFactor(0);
-        const hint = this.add.text(width / 2, height / 2 + 28, 'Press F to resume', {
-            fontSize: '22px',
-            color: '#bdc3c7'
+        const hint = this.add.text(width / 2, height / 2 + 28, 'Incident severity: snack break. Press F to resume.', {
+            fontSize: '18px',
+            color: '#bdc3c7',
+            align: 'center',
+            wordWrap: { width: width - 64 }
         }).setOrigin(0.5).setScrollFactor(0);
         this._pauseOverlay = this.add.container(0, 0, [overlay, title, hint]);
     }
@@ -721,11 +746,11 @@ export class PlayGame extends Phaser.Scene {
             align: 'center',
             wordWrap: { width: wrap }
         }).setOrigin(0.5).setScrollFactor(0);
-        const spaceHint = this.add.text(width / 2, height * 0.55, 'Press Space to continue', {
+        const spaceHint = this.add.text(width / 2, height * 0.55, 'Space: acknowledge and carry on', {
             fontSize: '14px',
             color: '#95a5a6'
         }).setOrigin(0.5).setScrollFactor(0);
-        const continueBtn = this.add.text(width / 2, height * 0.62, 'Continue', {
+        const continueBtn = this.add.text(width / 2, height * 0.62, 'Ship it (Continue)', {
             fontSize: '20px',
             color: '#ecf0f1'
         }).setOrigin(0.5).setScrollFactor(0).setInteractive({ useHandCursor: true });
@@ -755,22 +780,22 @@ export class PlayGame extends Phaser.Scene {
 
     private showBoss1CongratulationsOverlay(): void {
         this.showBossCongratulationsOverlay(
-            'Congratulations on Taking out a large installation of Data Dog',
-            'Your reward: +20% movement speed'
+            'Boss down: the watchdog went for a walk. (Parody / satire — not affiliated.)',
+            'Loot: +20% move speed. Finally, velocity matches your roadmap slides.'
         );
     }
 
     private showBoss2CongratulationsOverlay(): void {
         this.showBossCongratulationsOverlay(
-            'Congratulations on Taking out a large installation of Splunk',
-            'Your reward: +15% magnet pickup range'
+            'Boss down: you out-SPLUNK’d the SPLUNK. (Parody / satire — not affiliated.)',
+            'Loot: +15% magnet range. Logs find YOU now.'
         );
     }
 
     private showBoss3CongratulationsOverlay(): void {
         this.showBossCongratulationsOverlay(
-            'Congratulations on Taking out a large installation of DynaTrace',
-            'Your reward: +10% bullet speed'
+            'Boss down: one less "AI-powered" slide deck in your path. (Parody / satire — not affiliated.)',
+            'Loot: +10% bullet speed. Root cause: you.'
         );
     }
 

@@ -20,19 +20,37 @@ export class GameOverScene extends Phaser.Scene {
         this.add.image(0, 0, 'techBg').setOrigin(0).setDepth(-1);
 
         // Game Over title
-        this.add.text(centerX, height * 0.3, 'GAME OVER', {
+        this.add.text(centerX, height * 0.22, 'GAME OVER', {
             fontSize: '52px',
             color: '#e74c3c'
         }).setOrigin(0.5);
 
+        const quips = [
+            'Postmortem: root cause = you were outnumbered.',
+            'Status page: "Degraded experience" (understatement).',
+            'PagerDuty sends regards. So does gravity.',
+            'You did not pass the load test called "life".',
+            'Incident closed: won\'t fix (this timeline).',
+            'SLO: you. Error budget: exhausted.',
+        ];
+        const quip = quips[Math.floor(Math.random() * quips.length)];
+        this.add.text(centerX, height * 0.33, quip, {
+            fontSize: '16px',
+            color: '#95a5a6',
+            fontStyle: 'italic',
+            align: 'center',
+            wordWrap: { width: width - 80 }
+        }).setOrigin(0.5);
+
         // Score
-        this.add.text(centerX, height * 0.45, `Score: ${score}`, {
+        this.add.text(centerX, height * 0.46, `Score: ${score}`, {
             fontSize: '32px',
             color: '#ecf0f1'
         }).setOrigin(0.5);
 
         // High score (highlight if new record)
-        const highScoreLabel = score >= highScore && score > 0 ? 'New High Score!' : `High Score: ${highScore}`;
+        const highScoreLabel =
+            score >= highScore && score > 0 ? 'New high score — add it to your LinkedIn!' : `High score to beat: ${highScore}`;
         const highScoreColor = score >= highScore && score > 0 ? '#f1c40f' : '#bdc3c7';
         this.add.text(centerX, height * 0.55, highScoreLabel, {
             fontSize: '24px',
@@ -40,7 +58,7 @@ export class GameOverScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // Play Again button (text that acts as button)
-        const playAgain = this.add.text(centerX, height * 0.72, 'Play Again', {
+        const playAgain = this.add.text(centerX, height * 0.72, 'Retry deploy (Play Again)', {
             fontSize: '32px',
             color: '#2ecc71'
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });

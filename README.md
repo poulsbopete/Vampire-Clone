@@ -1,6 +1,6 @@
 # O11Y Survivors
 
-Survivor-style **Phaser 3** + **TypeScript** browser game: hold off rivals, collect **OpenTelemetry**-themed coins, unlock upgrades, and beat boss encounters. **WASD** to move; shooting auto-targets the nearest enemy.
+A **goofy, public-friendly** survivor-style game built with **Phaser 3** and **TypeScript**. You’re on-call for fun: steer with **mouse, touch, or WASD**, let auto-aim handle the drama, hoard OTel-themed coins, and survive waves of “enterprise observability” chaos. Boss names and quips are **parody / satire** for entertainment—not affiliated with, endorsed by, or sponsored by any vendor.
 
 | Try it | URL |
 |--------|-----|
@@ -12,6 +12,10 @@ Survivor-style **Phaser 3** + **TypeScript** browser game: hold off rivals, coll
 Prototype inspiration: [Vampire Survivors–style Phaser tutorial (Emanuele Feronato)](https://emanueleferonato.com/2024/12/12/html5-vampire-survivors-prototype-built-with-phaser-step-2-adding-and-collecting-coins/).
 
 ---
+
+## Public sharing
+
+Safe to link and demo: no profanity in-game, clear **parody** labeling on boss victory screens, and a light **disclaimer** on the title card. If you fork it, consider keeping the satire good-natured and the disclaimer visible.
 
 ## Prerequisites
 
