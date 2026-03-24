@@ -113,7 +113,11 @@ export class PlayGame extends Phaser.Scene {
             'right' : Phaser.Input.Keyboard.KeyCodes.D
         });
         this._pauseKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.F);
-        
+
+        // Pointer / touch: capture moves on the canvas (GitHub Pages, tablets)
+        this.input.mouse?.disableContextMenu();
+        this.input.addPointer(1);
+
         // set outer rectangle and inner rectangle; enemy spawn area is between these rectangles
         const outerRectangle : Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(-100, -100, GameOptions.gameSize.width + 200, GameOptions.gameSize.height + 200);
         const innerRectangle : Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(-50, -50, GameOptions.gameSize.width + 100, GameOptions.gameSize.height + 100);
@@ -819,19 +823,45 @@ export class PlayGame extends Phaser.Scene {
             }
         }
 
-        // set movement direction according to keys pressed
+        // Movement: pointer/touch steers toward cursor (hover or drag); otherwise WASD
         let movementDirection : Phaser.Math.Vector2 = new Phaser.Math.Vector2(0, 0);
-        if (this.controlKeys.right.isDown) {
-            movementDirection.x++;
+        const ptr = this.input.activePointer;
+        const gw = GameOptions.gameSize.width;
+        const gh = GameOptions.gameSize.height;
+        const inWorld =
+            ptr.worldX >= 0 &&
+            ptr.worldX <= gw &&
+            ptr.worldY >= 0 &&
+            ptr.worldY <= gh;
+        const steerHover = GameOptions.pointerSteerHover !== false;
+        const usePointer = ptr.isDown || (steerHover && inWorld);
+        let pointerSteering = false;
+
+        if (usePointer) {
+            const dx = ptr.worldX - this.player.x;
+            const dy = ptr.worldY - this.player.y;
+            const lenSq = dx * dx + dy * dy;
+            const dz = GameOptions.pointerDeadZone ?? 10;
+            if (lenSq > dz * dz) {
+                const len = Math.sqrt(lenSq);
+                movementDirection.set(dx / len, dy / len);
+                pointerSteering = true;
+            }
         }
-        if (this.controlKeys.left.isDown) {
-            movementDirection.x--;
-        }
-        if (this.controlKeys.up.isDown) {
-            movementDirection.y--;
-        }
-        if (this.controlKeys.down.isDown) {
-            movementDirection.y++;
+
+        if (!pointerSteering) {
+            if (this.controlKeys.right.isDown) {
+                movementDirection.x++;
+            }
+            if (this.controlKeys.left.isDown) {
+                movementDirection.x--;
+            }
+            if (this.controlKeys.up.isDown) {
+                movementDirection.y--;
+            }
+            if (this.controlKeys.down.isDown) {
+                movementDirection.y++;
+            }
         }
 
         // set player velocity according to movement direction

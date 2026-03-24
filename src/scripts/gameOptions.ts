@@ -14,6 +14,10 @@ export const GameOptions : any = {
     techGridSpacing         : 36,       // pixels between grid lines
 
     playerSpeed             : 100,      // player speed, in pixels per second
+
+    // Pointer / touch: move toward cursor (hover on desktop) or finger (touch). WASD when not steering.
+    pointerSteerHover     : true,       // if true, mouse over the playfield steers without holding click
+    pointerDeadZone       : 14,         // min distance (px) from player before pointer steering applies
     enemySpeed              : 50,       // enemy speed, in pixels per second
     bulletSpeed             : 200,      // bullet speed, in pixels per second
     bulletRate              : 1000,     // bullet rate, in milliseconds per bullet

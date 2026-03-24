@@ -63,9 +63,11 @@ You’re an observability team under pressure. Coins represent **OpenTelemetry k
 
 ## Controls
 
-| Key | Action |
-|-----|--------|
-| **W A S D** | Move |
+| Key / input | Action |
+|-------------|--------|
+| **Mouse** | Move the cursor **over the playfield** — the player steers toward it (no click needed on desktop). **Click / drag** also works. |
+| **Touch** | **Touch and hold** (or drag) — player moves toward your finger. |
+| **W A S D** | Move (used when pointer isn’t steering, e.g. outside the dead zone rules above) |
 | **F** | Pause / resume |
 | **1** / **2** | Pick upgrade on **level-up** overlays (do not use Space there) |
 | **Space** | Continue on **boss reward** overlays |
