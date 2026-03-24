@@ -2,12 +2,19 @@
 
 A **goofy, public-friendly** survivor-style game built with **Phaser 3** and **TypeScript**. You’re on-call for fun: steer with **mouse, touch, or WASD**, let auto-aim handle the drama, hoard OTel-themed coins, and survive waves of “enterprise observability” chaos. Boss names and quips are **parody / satire** for entertainment—not affiliated with, endorsed by, or sponsored by any vendor.
 
+### Upstream vs this fork
+
+| Repository | Role |
+|------------|------|
+| **[elastic-ed/Vampire-Clone](https://github.com/elastic-ed/Vampire-Clone)** | **Upstream** — canonical project maintained by the Elastic Ed org. |
+| **[poulsbopete/Vampire-Clone](https://github.com/poulsbopete/Vampire-Clone)** | **Extended fork** — GitHub Pages workflow, Kibana dashboard JSON, Elastic bootstrap script, pointer controls, and public-demo copy. Use this repo for demos and personal experiments; propose upstream changes via PR to `elastic-ed` after talking to maintainers. |
+
 | Try it | URL |
 |--------|-----|
 | **Local dev** | `npm run development` → [http://localhost:8080](http://localhost:8080) |
 | **GitHub Pages** | After [Actions](https://github.com/poulsbopete/Vampire-Clone/actions) deploys `main`: **[poulsbopete.github.io/Vampire-Clone](https://poulsbopete.github.io/Vampire-Clone/)** |
 
-> Upstream repo **[elastic-ed/Vampire-Clone](https://github.com/elastic-ed/Vampire-Clone)** would use `https://elastic-ed.github.io/Vampire-Clone/` for Pages.
+> If Pages is enabled on **upstream** `elastic-ed/Vampire-Clone`, its URL would be `https://elastic-ed.github.io/Vampire-Clone/` (this fork uses **poulsbopete**’s URL in the table above).
 
 Prototype inspiration: [Vampire Survivors–style Phaser tutorial (Emanuele Feronato)](https://emanueleferonato.com/2024/12/12/html5-vampire-survivors-prototype-built-with-phaser-step-2-adding-and-collecting-coins/).
 
