@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Automated SRE — Elastic Observability Serverless</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --blue: #0B64DD;
+      --teal: #48EFCF;
+      --poppy: #FF957D;
+      --pink: #F04E98;
+      --yellow: #FEC514;
+      --dev: #101C3F;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Inter, system-ui, sans-serif;
+      color: #fff;
+      background: #070b14;
+    }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(72,239,207,.35); } 50% { box-shadow: 0 0 0 12px rgba(72,239,207,0); } }
+    @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+    @keyframes glow { 0%,100% { opacity: .45; } 50% { opacity: .9; } }
+    .stage {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(1400px 560px at 8% -8%, rgba(11,100,221,.62), transparent 55%),
+        radial-gradient(1000px 480px at 100% 0%, rgba(72,239,207,.2), transparent 52%),
+        linear-gradient(155deg, #101C3F 0%, #153385 48%, #0B64DD 120%);
+      padding: clamp(20px, 3.5vh, 40px) clamp(20px, 4vw, 56px) clamp(24px, 4vh, 48px);
+    }
+    .orb {
+      position: absolute;
+      width: min(42vw, 420px);
+      height: min(42vw, 420px);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(72,239,207,.3), transparent 68%);
+      top: -12vh;
+      right: -6vw;
+      animation: glow 4.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .pad { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; }
+    .brandrow { display: flex; align-items: center; gap: 14px; animation: rise .55s ease both; }
+    .mark { width: 44px; height: 44px; flex: 0 0 44px; }
+    .brand { font-weight: 800; font-size: clamp(1.1rem, 2.2vw, 1.35rem); letter-spacing: -.02em; line-height: 1.15; }
+    .brand span {
+      display: block;
+      font-size: clamp(.68rem, 1.2vw, .78rem);
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-top: 4px;
+    }
+    h1 {
+      margin: clamp(18px, 3vh, 28px) 0 12px;
+      font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+      line-height: 1.02;
+      font-weight: 800;
+      letter-spacing: -.035em;
+      max-width: 14ch;
+      animation: rise .65s .08s ease both;
+    }
+    .lede {
+      margin: 0 0 clamp(22px, 3.5vh, 32px);
+      font-size: clamp(1.05rem, 1.8vw, 1.28rem);
+      line-height: 1.45;
+      color: #E8EEF9;
+      max-width: 52ch;
+      animation: rise .65s .14s ease both;
+    }
+    .lede strong { color: var(--teal); font-weight: 700; }
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(10px, 1.4vw, 16px);
+      margin: 0 0 clamp(20px, 3vh, 28px);
+      animation: rise .7s .2s ease both;
+    }
+    .p {
+      background: rgba(16,28,63,.55);
+      border: 1px solid rgba(72,239,207,.28);
+      border-radius: 14px;
+      padding: clamp(14px, 2vh, 18px) clamp(12px, 1.4vw, 16px);
+      min-height: 132px;
+    }
+    .p:first-child { border-color: rgba(72,239,207,.55); animation: pulse 3.2s ease-in-out infinite; }
+    .ico { width: 32px; height: 32px; margin-bottom: 10px; display: block; }
+    .p b { display: block; font-size: clamp(.95rem, 1.4vw, 1.05rem); font-weight: 700; margin-bottom: 6px; }
+    .p em { display: block; font-style: normal; font-size: clamp(.8rem, 1.2vw, .9rem); line-height: 1.4; color: #C9D5EA; }
+    .soon {
+      display: inline-block;
+      margin-top: 8px;
+      font-family: "Space Mono", ui-monospace, monospace;
+      font-size: .68rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #101C3F;
+      background: var(--yellow);
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+    .path {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 0 0 clamp(18px, 2.8vh, 26px);
+      animation: rise .7s .28s ease both;
+    }
+    .path span {
+      font-family: "Space Mono", ui-monospace, monospace;
+      font-size: clamp(.7rem, 1.1vw, .78rem);
+      letter-spacing: .04em;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      padding: 8px 11px;
+      border-radius: 8px;
+    }
+    .path i { font-style: normal; color: var(--teal); font-weight: 700; }
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      padding: clamp(14px, 2vh, 18px) clamp(16px, 2vw, 22px);
+      border-radius: 14px;
+      background: linear-gradient(90deg, #0B64DD, #153385, #0B64DD);
+      background-size: 200% 100%;
+      animation: shimmer 5s linear infinite, rise .7s .34s ease both;
+      border: 1px solid rgba(72,239,207,.35);
+    }
+    .cta p {
+      margin: 0;
+      font-size: clamp(.95rem, 1.5vw, 1.1rem);
+      line-height: 1.4;
+      font-weight: 600;
+      max-width: 48ch;
+    }
+    .go {
+      font-family: "Space Mono", ui-monospace, monospace;
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #101C3F;
+      background: var(--teal);
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    @media (max-width: 900px) {
+      .pillars { grid-template-columns: 1fr 1fr; }
+      h1 { max-width: none; }
+    }
+    @media (max-width: 560px) {
+      .pillars { grid-template-columns: 1fr; }
+      .cta { align-items: flex-start; }
+      .go { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="orb" aria-hidden="true"></div>
+    <div class="pad">
+      <div class="brandrow">
+        <svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#0B64DD"/><path fill="#fff" d="M18 40.5c6.8-1.8 12-3.1 18.7-3.1 3.7 0 7.1.5 10.3 1.4-1.7-6.7-6.8-11.7-13.5-13.4C26.2 23.6 18.8 30.2 18 40.5zm28.8-2.2c-3-.7-6.1-1.1-9.3-1.1-5.5 0-10.5.9-16.2 2.5 2.2 7.2 8.9 12.4 16.8 12.4 6.5 0 12.1-3.5 15.1-8.7-2-.6-4.1-1.1-6.4-1.1-3.7 0-7.1.6-10.5 1.7 1.9 1.7 4.4 2.8 7.2 2.8 5.2 0 9.6-3.2 11.4-7.7-.2 0-.5-.1-.7-.2z"/></svg>
+        <div class="brand">Elastic Observability Serverless<span>Automated SRE · AI Agent workflows · continuous improvement</span></div>
+      </div>
+      <h1>Automated SRE.<br/>AI Agent–built ops.</h1>
+      <p class="lede">Boards, alerts, SLOs, and Cases come from <strong>AI Agent–generated workflows</strong> that keep improving the estate. We <strong>preloaded</strong> them so you can tour immediately — same pack lives in the <strong>Workflow Template Library</strong> for customers to install themselves.</p>
+      <div class="pillars">
+        <div class="p">
+          <svg class="ico" viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="14" width="5" height="14" rx="1.5" fill="#48EFCF"/><rect x="11" y="8" width="5" height="20" rx="1.5" fill="#FEC514"/><rect x="19" y="3" width="5" height="25" rx="1.5" fill="#FF957D"/><rect x="27" y="11" width="2" height="17" rx="1" fill="#F04E98"/></svg>
+          <b>Managed Prometheus</b>
+          <em>remote_write into Streams — metrics without the scraper farm.</em>
+        </div>
+        <div class="p">
+          <svg class="ico" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11" fill="none" stroke="#48EFCF" stroke-width="2.5"/><path d="M16 5v11l7 4" fill="none" stroke="#FEC514" stroke-width="2.5" stroke-linecap="round"/></svg>
+          <b>OpenTelemetry</b>
+          <em>Traces, metrics, logs on Applications — one OTLP pipe.</em>
+        </div>
+        <div class="p">
+          <svg class="ico" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 22V10l10-6 10 6v12l-10 6-10-6z" fill="none" stroke="#48EFCF" stroke-width="2"/><path d="M16 16l10-6M16 16v12M16 16L6 10" stroke="#FEC514" stroke-width="1.6"/></svg>
+          <b>AI Agent workflows</b>
+          <em>Template Library pack — preloaded here; scheduled for continuous improvement.</em>
+        </div>
+        <div class="p">
+          <svg class="ico" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="14" r="6" fill="#48EFCF"/><path d="M8 27c2.2-4 6-6 8-6s5.8 2 8 6" fill="none" stroke="#FEC514" stroke-width="2.2" stroke-linecap="round"/><circle cx="23" cy="9" r="3" fill="#F04E98"/></svg>
+          <b>Nightshift</b>
+          <em>AI SRE co-worker for investigations.</em>
+          <span class="soon">Coming soon</span>
+        </div>
+      </div>
+      <div class="path" aria-label="Left-nav tour path">
+        <span>Overview</span><i>→</i><span>Discover</span><i>→</i><span>Dashboards</span><i>→</i><span>Workflows</span><i>→</i><span>Alerting</span><i>→</i><span>Cases</span><i>→</i><span>SLOs</span><i>→</i><span>Streams</span><i>→</i><span>Apps</span><i>→</i><span>Infra</span>
+      </div>
+      <div class="cta">
+        <p>Open <strong>Workflows</strong> — see AI Agent Auto-ops running. Peek at <strong>Auto:</strong> boards &amp; Cases. In a real project you’d install the same templates from the <strong>Template Library</strong>.</p>
+        <div class="go">Tour automated SRE →</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

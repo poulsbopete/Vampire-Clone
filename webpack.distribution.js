@@ -38,6 +38,11 @@ module.exports = {
                     context: 'src/'
                 },
                 {
+                    // Instruqt wait-slide: Automated SRE pitch (full-bleed iframe)
+                    from: 'automated-sre.html',
+                    context: 'src/'
+                },
+                {
                     // every file inside src/assets folder
                     from: 'assets/',
                     context: 'src/',
