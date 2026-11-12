@@ -28,9 +28,10 @@
     @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(72,239,207,.35); } 50% { box-shadow: 0 0 0 12px rgba(72,239,207,0); } }
     @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
     @keyframes glow { 0%,100% { opacity: .45; } 50% { opacity: .9; } }
+    @keyframes nudge { 0%,100% { transform: translateX(0); } 50% { transform: translateX(8px); } }
     .stage {
       position: relative;
-      min-height: 100vh;
+      min-height: 100%;
       overflow: hidden;
       background:
         radial-gradient(1400px 560px at 8% -8%, rgba(11,100,221,.62), transparent 55%),
@@ -149,10 +150,13 @@
       font-weight: 600;
       max-width: 48ch;
     }
-    .go {
+    .advance {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       font-family: "Space Mono", ui-monospace, monospace;
       font-size: .78rem;
-      letter-spacing: .08em;
+      letter-spacing: .06em;
       text-transform: uppercase;
       color: #101C3F;
       background: var(--teal);
@@ -160,7 +164,21 @@
       border-radius: 999px;
       font-weight: 700;
       white-space: nowrap;
+      box-shadow: 0 0 0 0 rgba(72,239,207,.45);
+      animation: pulse 2.4s ease-in-out infinite;
     }
+    .advance .chev {
+      display: inline-block;
+      animation: nudge 1.1s ease-in-out infinite;
+      font-weight: 800;
+    }
+    .hint {
+      margin: 14px 0 0;
+      font-size: .9rem;
+      color: #C9D5EA;
+      animation: rise .7s .4s ease both;
+    }
+    .hint b { color: var(--teal); }
     @media (max-width: 900px) {
       .pillars { grid-template-columns: 1fr 1fr; }
       h1 { max-width: none; }
@@ -168,7 +186,7 @@
     @media (max-width: 560px) {
       .pillars { grid-template-columns: 1fr; }
       .cta { align-items: flex-start; }
-      .go { width: 100%; text-align: center; }
+      .advance { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -209,9 +227,10 @@
         <span>Overview</span><i>→</i><span>Discover</span><i>→</i><span>Dashboards</span><i>→</i><span>Workflows</span><i>→</i><span>Alerting</span><i>→</i><span>Cases</span><i>→</i><span>SLOs</span><i>→</i><span>Streams</span><i>→</i><span>Apps</span><i>→</i><span>Infra</span>
       </div>
       <div class="cta">
-        <p>Open <strong>Workflows</strong> — see AI Agent Auto-ops running. Peek at <strong>Auto:</strong> boards &amp; Cases. In a real project you’d install the same templates from the <strong>Template Library</strong>.</p>
-        <div class="go">Tour automated SRE →</div>
+        <p>Open <strong>Workflows</strong> — see AI Agent Auto-ops running. Peek at <strong>Auto:</strong> boards &amp; Cases. Same pack lives in the <strong>Template Library</strong>.</p>
+        <div class="advance" aria-hidden="true">Swipe for Survivors <span class="chev">→</span></div>
       </div>
+      <p class="hint">Lab is still booting — <b>swipe right</b> (or tap the next dot below) for <b>O11Y Survivors</b>. When setup finishes, Instruqt shows <b>Start</b>.</p>
     </div>
   </div>
 </body>
