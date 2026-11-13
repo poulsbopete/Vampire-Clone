@@ -115,21 +115,42 @@
     .path {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 12px;
       align-items: center;
       margin: 0 0 clamp(18px, 2.8vh, 26px);
       animation: rise .7s .28s ease both;
     }
-    .path span {
+    .path a, .path span.choice {
       font-family: "Space Mono", ui-monospace, monospace;
-      font-size: clamp(.7rem, 1.1vw, .78rem);
+      font-size: clamp(.78rem, 1.2vw, .88rem);
       letter-spacing: .04em;
       background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.14);
-      padding: 8px 11px;
-      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.18);
+      padding: 12px 16px;
+      border-radius: 10px;
+      color: #F5F7FA;
+      text-decoration: none;
+      font-weight: 700;
     }
-    .path i { font-style: normal; color: var(--teal); font-weight: 700; }
+    .path a {
+      background: rgba(72,239,207,.14);
+      border-color: rgba(72,239,207,.45);
+      color: var(--teal);
+    }
+    .path a:hover, .path a:focus-visible {
+      filter: brightness(1.1);
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
+    .path i {
+      font-style: normal;
+      color: #9BB0D0;
+      font-weight: 700;
+      font-family: "Space Mono", ui-monospace, monospace;
+      font-size: .75rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
     .cta {
       display: flex;
       flex-wrap: wrap;
@@ -236,14 +257,16 @@
           <span class="live">Live</span>
         </div>
       </div>
-      <div class="path" aria-label="Left-nav tour path">
-        <span>Overview</span><i>→</i><span>Discover</span><i>→</i><span>Dashboards</span><i>→</i><span>Workflows</span><i>→</i><span>Alerting</span><i>→</i><span>Cases</span><i>→</i><span>SLOs</span><i>→</i><span>Streams</span><i>→</i><span>Apps</span><i>→</i><span>Infra</span>
+      <div class="path" aria-label="Two lab options">
+        <a href="https://poulsbopete.github.io/Vampire-Clone/">O11Y Survivors</a>
+        <i>or</i>
+        <span class="choice">Workflows in Kibana</span>
       </div>
       <div class="cta">
-        <p>Open <strong>Workflows</strong> — see AI Agent Auto-ops running. Peek at <strong>Auto:</strong> boards &amp; Cases. Same pack lives in the <strong>Template Library</strong>.</p>
+        <p>Two moves: play <strong>O11Y Survivors</strong> while the lab boots, then open <strong>Workflows</strong> when Instruqt shows <strong>Start</strong> — Auto-ops boards, alerts, SLOs, and Cases are already preloaded.</p>
         <a class="advance" href="https://poulsbopete.github.io/Vampire-Clone/">Play O11Y Survivors <span class="chev" aria-hidden="true">→</span></a>
       </div>
-      <p class="hint">Lab is still booting (~3–5 min) — <a href="https://poulsbopete.github.io/Vampire-Clone/">click for <b>O11Y Survivors</b></a>. When setup finishes, Instruqt shows <b>Start</b>.</p>
+      <p class="hint">Lab is still booting (~3–5 min). When setup finishes, click <b>Start</b> and open <b>Workflows</b>.</p>
     </div>
   </div>
 </body>
